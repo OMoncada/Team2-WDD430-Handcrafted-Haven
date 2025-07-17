@@ -6,30 +6,32 @@ import clsx from "clsx";
 
 const links = [
   { name: "HomePage", href: "/" },
-  { name: "Seller Profiles", href: "/" },
-  { name: "Product Listings", href: "/" },
-  { name: "Reviews & Ratings", href: "/" },
+  { name: "Seller Profiles", href: "/profiles" },
+  { name: "Product Listings", href: "/list" },
+  { name: "Reviews & Ratings", href: "/review" },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
 
   return (
-    <div className="flex-col">
+    <>
       {links.map((link) => {
         return (
           <Link
             key={link.name}
             href={link.href}
             className={clsx(
-              "text-sm hover:bg-black hover:text-white rounded-3xl font-bold",
-              { "bg-black": pathname === link.href }
+              "text-sm md:text-base md:p-1 hover:bg-black hover:text-white rounded-sm font-bold",
+              {
+                "bg-black text-white hover:bg-gray-600": pathname === link.href,
+              }
             )}
           >
-            <p>{link.name}</p>
+            <p className="px-2">{link.name}</p>
           </Link>
         );
       })}
-    </div>
+    </>
   );
 }
