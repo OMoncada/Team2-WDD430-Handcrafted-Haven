@@ -145,3 +145,4 @@ export default function Page({ params }: { params: { seller: string } }) {
     </main>
   );
 }
+//pruebas//
