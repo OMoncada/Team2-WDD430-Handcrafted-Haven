@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 const sellers = [
   {
@@ -52,10 +51,9 @@ export default function Page() {
       <h1 className="text-4xl font-bold text-center mb-12">Seller Profiles</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {sellers.map((seller, i) => (
-          <Link
+          <div
             key={i}
-            href={`/profiles/${seller.slug}`}
-            className="bg-[#3e2723] text-white shadow-lg rounded-lg overflow-hidden text-center p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+            className="bg-[#3e2723] text-white shadow-lg rounded-lg overflow-hidden text-center p-6"
           >
             <div className="w-full h-[200px] overflow-hidden rounded-full mb-4">
               <Image
@@ -73,7 +71,7 @@ export default function Page() {
             <p className="mt-1 text-yellow-400">
               Calificación: {seller.rating.toFixed(1)} ★
             </p>
-          </Link>
+          </div>
         ))}
       </div>
     </main>
