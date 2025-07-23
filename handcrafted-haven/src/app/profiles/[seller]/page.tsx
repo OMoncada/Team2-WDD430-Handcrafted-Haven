@@ -1,15 +1,5 @@
 import Image from "next/image";
-import { type Metadata } from "next";
-
-// Tipo usado solo para generateMetadata
-type AsyncProps = {
-  params: { seller: string };
-};
-
-// Tipo para componente Page normal
-interface PageProps {
-  params: { seller: string };
-}
+import { Metadata } from "next";
 
 type Product = {
   title: string;
@@ -25,12 +15,6 @@ type Seller = {
   image: string;
   products: Product[];
 };
-
-export async function generateMetadata({ params }: AsyncProps): Promise<Metadata> {
-  return {
-    title: `Perfil de ${params.seller.replace("-", " ")}`,
-  };
-}
 
 const sellers: Record<string, Seller> = {
   "juan-perez": {
@@ -84,7 +68,13 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-export default function Page({ params }: PageProps) {
+export async function generateMetadata({ params }: { params: { seller: string } }): Promise<Metadata> {
+  return {
+    title: `Perfil de ${params.seller.replace("-", " ")}`,
+  };
+}
+
+export default function Page({ params }: { params: { seller: string } }) {
   const seller = sellers[params.seller];
 
   if (!seller) {
