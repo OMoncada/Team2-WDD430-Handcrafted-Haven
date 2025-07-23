@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
 import Image from "next/image";
+import { type Metadata } from "next";
 
 type Product = {
   title: string;
@@ -15,6 +15,18 @@ type Seller = {
   image: string;
   products: Product[];
 };
+
+type Props = {
+  params: {
+    seller: string;
+  };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  return {
+    title: `Perfil de ${params.seller.replace("-", " ")}`,
+  };
+}
 
 const sellers: Record<string, Seller> = {
   "juan-perez": {
@@ -68,17 +80,15 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-type Props = {
-  params: {
-    seller: string;
-  };
-};
-
-export default function SellerPage({ params }: Props) {
+export default function Page({ params }: Props) {
   const seller = sellers[params.seller];
 
   if (!seller) {
-    notFound();
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-3xl font-bold">Vendedor no encontrado</h1>
+      </div>
+    );
   }
 
   return (
@@ -140,10 +150,4 @@ export default function SellerPage({ params }: Props) {
       )}
     </main>
   );
-}
-
-export async function generateStaticParams() {
-  return Object.keys(sellers).map((key) => ({
-    seller: key,
-  }));
 }
