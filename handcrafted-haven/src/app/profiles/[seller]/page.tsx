@@ -1,6 +1,16 @@
 import Image from "next/image";
 import { type Metadata } from "next";
 
+// Tipo usado solo para generateMetadata
+type AsyncProps = {
+  params: { seller: string };
+};
+
+// Tipo para componente Page normal
+interface PageProps {
+  params: { seller: string };
+}
+
 type Product = {
   title: string;
   price: string;
@@ -16,13 +26,7 @@ type Seller = {
   products: Product[];
 };
 
-type Props = {
-  params: {
-    seller: string;
-  };
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: AsyncProps): Promise<Metadata> {
   return {
     title: `Perfil de ${params.seller.replace("-", " ")}`,
   };
@@ -80,7 +84,7 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-export default function Page({ params }: Props) {
+export default function Page({ params }: PageProps) {
   const seller = sellers[params.seller];
 
   if (!seller) {
