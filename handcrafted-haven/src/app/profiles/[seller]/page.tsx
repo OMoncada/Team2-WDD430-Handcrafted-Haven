@@ -68,13 +68,19 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-export async function generateMetadata({ params }: { params: { seller: string } }): Promise<Metadata> {
+type PageProps = {
+  params: {
+    seller: string;
+  };
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   return {
     title: `Perfil de ${params.seller.replace("-", " ")}`,
   };
 }
 
-export default function Page({ params }: { params: { seller: string } }) {
+export default function Page({ params }: PageProps) {
   const seller = sellers[params.seller];
 
   if (!seller) {
@@ -145,4 +151,3 @@ export default function Page({ params }: { params: { seller: string } }) {
     </main>
   );
 }
-//pruebas//
