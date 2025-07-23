@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 type Product = {
   title: string;
@@ -16,6 +16,12 @@ type Seller = {
   products: Product[];
 };
 
+type PageProps = {
+  params: {
+    seller: string;
+  };
+};
+
 const sellers: Record<string, Seller> = {
   "juan-perez": {
     name: "Juan Pérez",
@@ -30,12 +36,18 @@ const sellers: Record<string, Seller> = {
     rating: 5.0,
     image: "/images/vendedormadera.png",
     products: [
-      { title: "Tallado de Roble", price: "$45.00", image: "/images/madera1.png", rating: "★★★★★" },
-      { title: "Marco Decorativo", price: "$30.00", image: "/images/madera2.png", rating: "★★★★☆" },
-      { title: "Caja Artesanal", price: "$28.00", image: "/images/madera3.png", rating: "★★★★★" },
-      { title: "Banco Rústico", price: "$60.00", image: "/images/madera4.png", rating: "★★★★★" },
-      { title: "Portarretratos", price: "$20.00", image: "/images/madera5.png", rating: "★★★★☆" },
-      { title: "Estante Minimalista", price: "$55.00", image: "/images/madera6.png", rating: "★★★★☆" },
+      {
+        title: "Tallado de Roble",
+        price: "$45.00",
+        image: "/images/vendedormadera.png",
+        rating: "★★★★★",
+      },
+      {
+        title: "Marco Decorativo",
+        price: "$30.00",
+        image: "/images/vendedormadera.png",
+        rating: "★★★★☆",
+      },
     ],
   },
   "luis-gomez": {
@@ -68,19 +80,13 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-type PageProps = {
-  params: {
-    seller: string;
-  };
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   return {
     title: `Perfil de ${params.seller.replace("-", " ")}`,
   };
 }
 
-export default function Page({ params }: PageProps) {
+export default async function Page({ params }: PageProps) {
   const seller = sellers[params.seller];
 
   if (!seller) {
@@ -113,11 +119,10 @@ export default function Page({ params }: PageProps) {
           <h2 className="text-2xl font-semibold text-center mb-8">
             Productos por {seller.name}
           </h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {seller.products.map((product, i) => (
+            {seller.products.map((product, index) => (
               <div
-                key={i}
+                key={index}
                 className="bg-white shadow-[0_4px_10px_rgba(139,69,19,0.4)] rounded-lg overflow-hidden p-4 text-center"
               >
                 <div className="w-full h-[200px] overflow-hidden">
