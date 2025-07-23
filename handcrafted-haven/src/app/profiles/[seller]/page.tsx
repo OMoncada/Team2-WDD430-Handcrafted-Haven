@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import Image from "next/image";
 
 type Product = {
@@ -67,15 +68,17 @@ const sellers: Record<string, Seller> = {
   },
 };
 
-export default function Page({ params }: { params: { seller: string } }) {
+type Props = {
+  params: {
+    seller: string;
+  };
+};
+
+export default function SellerPage({ params }: Props) {
   const seller = sellers[params.seller];
 
   if (!seller) {
-    return (
-      <div className="text-center py-20">
-        <h1 className="text-3xl font-bold">Vendedor no encontrado</h1>
-      </div>
-    );
+    notFound();
   }
 
   return (
@@ -131,8 +134,16 @@ export default function Page({ params }: { params: { seller: string } }) {
           </div>
         </>
       ) : (
-        <p className="text-center text-gray-500 mt-4">Este vendedor aún no tiene productos cargados.</p>
+        <p className="text-center text-gray-500 mt-4">
+          Este vendedor aún no tiene productos cargados.
+        </p>
       )}
     </main>
   );
+}
+
+export async function generateStaticParams() {
+  return Object.keys(sellers).map((key) => ({
+    seller: key,
+  }));
 }
