@@ -73,8 +73,8 @@ export default function Page() {
         Featured Products
       </h2>
       <p className="text-center -mt-16 pb-10 text-lg text-gray-700">
-            Buy with purpose and give the best of traditional craftsmanship.
-          </p>
+        Buy with purpose and give the best of traditional craftsmanship.
+      </p>
       <div className="flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4 max-w-7xl">
           {products.map((product, i) => (
@@ -93,7 +93,9 @@ export default function Page() {
               </div>
               <div className="mt-4 space-y-2">
                 <p className="font-bold text-lg">{product.title}</p>
-                <p><strong></strong> {product.category}</p>
+                <p>
+                  <strong></strong> {product.category}
+                </p>
                 <p className="text-green-600 font-semibold">
                   <strong></strong> {product.price}
                 </p>
