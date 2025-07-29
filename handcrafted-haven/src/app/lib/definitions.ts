@@ -1,19 +1,22 @@
-export type Profiles = {
-  id: string;
-  name: string;
+export type Users = {
+  user_id: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
+  user_type: "admin" | "seller" | "user";
 };
 
 export type Products = {
-  id: string;
+  product_id: string;
   name: string;
   price: number;
-  quantity: number;
+  description?: string;
+  image?: string;
 };
 
-export type Ratings = {
-  id: string;
-  review: string;
+export type Review = {
+  review_id: string;
+  review?: string;
   rating: number;
 };
