@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { authenticate } from "@/app/lib/actions";
 import { useSearchParams } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ export default function LoginForm() {
     authenticate,
     undefined
   );
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   return (
     <form className="space-y-3" action={formAction}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -21,11 +23,11 @@ export default function LoginForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
-              Email
+              Email <span className="text-red-600">*</span>
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-2 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 name="email"
@@ -39,18 +41,32 @@ export default function LoginForm() {
               className="mb-3 mt-5 block text-xs font-medium text-gray-900"
               htmlFor="password"
             >
-              Password
+              Password <span className="text-red-600">*</span>
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-2 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
-                type="password"
+                type={isPasswordVisible ? "text" : "password"}
                 name="password"
                 placeholder="Enter password"
                 required
                 minLength={6}
               />
+              <button
+                type="button"
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                aria-label={
+                  isPasswordVisible ? "Hide password" : "Show password"
+                }
+              >
+                {isPasswordVisible ? (
+                  <EyeSlashIcon className="h-5 w-5 text-gray-700" />
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-gray-700" />
+                )}
+              </button>
             </div>
           </div>
         </div>

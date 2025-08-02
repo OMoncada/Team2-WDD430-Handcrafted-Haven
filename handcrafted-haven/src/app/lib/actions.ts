@@ -8,38 +8,60 @@ import bcrypt from "bcryptjs";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-const registerSchema = z.object({
-  firstname: z.string().min(1),
-  lastname: z.string().min(1),
-  email: z.string(),
-  password: z.string().min(6),
-  user_type: z.enum(["user", "seller"]),
-});
+const registerSchema = z
+  .object({
+    firstname: z.string().min(1, "First name must be at least 3 characters."),
+    lastname: z.string().min(1, "Last name must be at least 3 characters."),
+    email: z.string().email("Please enter a valid email."),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters.")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/,
+        "Password must include uppercase, lowercase, number, and special character."
+      ),
+    confirmPassword: z.string().min(8),
+    user_type: z.enum(["user", "seller"]),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type RegisterData = z.infer<typeof registerSchema>;
+
+export type RegisterResult = {
+  success: boolean;
+  errors?: z.ZodFormattedError<RegisterData>;
+  message?: string;
+  submittedData?: Record<string, string>;
+};
 
 export async function register(
-  prevState: string | undefined,
+  prevState: RegisterResult | undefined,
   formData: FormData
-) {
-  const raw = {
-    firstname: formData.get("firstname"),
-    lastname: formData.get("lastname"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    user_type: formData.get("user_type"),
-  };
+): Promise<RegisterResult> {
+  const rawData = Object.fromEntries(formData.entries());
 
-  const result = registerSchema.safeParse(raw);
+  const result = registerSchema.safeParse(rawData);
 
   if (!result.success) {
-    return "Invalid input data.";
+    return {
+      success: false,
+      errors: result.error.format(),
+      submittedData: rawData as Record<string, string>,
+    };
   }
 
   const { firstname, lastname, email, password, user_type } = result.data;
 
   try {
     const existing = await sql`SELECT * FROM users WHERE email = ${email}`;
-    if (existing.length > 0) {
-      return "User already exists.";
+    if (existing.count > 0) {
+      return {
+        success: false,
+        message: "A user with this email already exists.",
+      };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,10 +71,13 @@ export async function register(
       VALUES (${firstname}, ${lastname}, ${email}, ${hashedPassword}, ${user_type})
     `;
 
-    return undefined;
+    return { success: true };
   } catch (error) {
     console.error("Registration failed:", error);
-    return "Registration failed.";
+    return {
+      success: false,
+      message: "Registration failed. Please try again.",
+    };
   }
 }
 
