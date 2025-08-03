@@ -46,16 +46,21 @@ export default async function NavBar() {
               </Link>
             </>
           ) : (
-            <form
-              action={async () => {
-                "use server";
-                await signOut({ redirectTo: "/" });
-              }}
-            >
-              <button className="rounded-md bg-gray-50 px-6 py-3 text-sm hover:bg-red-100 hover:text-red-600 md:flex-none md:justify-start md:p-2 md:px-3 transition duration-800 border-2 border-black">
-                <div>Sign Out</div>
-              </button>
-            </form>
+            <div className="flex items-center gap-4">
+              <span className="font-medium text-gray-700">
+                Welcome, {session.user.firstname}!
+              </span>
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
+                <button className="rounded-md bg-gray-50 px-6 py-3 text-sm hover:bg-red-100 hover:text-red-600 md:flex-none md:justify-start md:p-2 md:px-3 transition duration-800 border-2 border-black">
+                  <div>Sign Out</div>
+                </button>
+              </form>
+            </div>
           )}
         </div>
       </div>
