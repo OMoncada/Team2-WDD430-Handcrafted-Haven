@@ -99,3 +99,34 @@ export async function authenticate(
     throw error;
   }
 }
+
+// src/app/products/actions.ts
+// import postgres from "postgres";
+
+// const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+
+export type ProductWithSeller = {
+  product_id: string;
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  user_id: string;
+  seller_category: string;
+  seller_firstname: string;
+  seller_lastname: string;
+};
+
+export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
+  return await sql<ProductWithSeller[]>`
+    SELECT 
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      s.category AS seller_category,
+      u.firstname AS seller_firstname,
+      u.lastname AS seller_lastname
+    FROM product p
+    JOIN seller_profile s ON p.user_id = s.user_id
+    JOIN users u ON p.user_id = u.user_id
+    ORDER BY p.name;
+  `;
+}
