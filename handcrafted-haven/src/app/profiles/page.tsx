@@ -1,22 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import postgres from "postgres";
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
-
-type SellerProfile = {
-  user_id: string;
-  image_url: string;
-  category: string;
-  phone: string;
-  description: string;
-};
+import { fetchAllSellers } from "../lib/actions";
 
 export default async function ProfilesPage() {
-  const sellers = await sql<SellerProfile[]>`
-    SELECT * FROM seller_profile
-  `;
-
+  const sellers = await fetchAllSellers();
   return (
     <main className="px-4 py-10">
       <h1 className="text-4xl font-bold text-center mb-12 text-[#3e2723]">
@@ -39,7 +26,10 @@ export default async function ProfilesPage() {
                 className="object-cover w-full h-full"
               />
             </div>
-            <h2 className="text-2xl font-semibold">{seller.category}</h2>
+            <h2 className="text-2xl font-bold">
+              {seller.firstname} {seller.lastname}
+            </h2>
+            <h3 className="text-xl ">{seller.category}</h3>
             <p className="mt-2 text-sm">{seller.description}</p>
           </Link>
         ))}
@@ -47,4 +37,3 @@ export default async function ProfilesPage() {
     </main>
   );
 }
-//end//

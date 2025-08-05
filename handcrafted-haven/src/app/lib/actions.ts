@@ -5,9 +5,12 @@ import { signIn } from "../../../auth";
 import { AuthError } from "next-auth";
 import postgres from "postgres";
 import bcrypt from "bcryptjs";
+import { ProductWithSeller } from "./definitions";
+import { SellerProfile } from "./definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
+// Registration process
 const registerSchema = z
   .object({
     firstname: z.string().min(1, "First name must be at least 3 characters."),
@@ -81,6 +84,7 @@ export async function register(
   }
 }
 
+//Login process
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData
@@ -100,22 +104,33 @@ export async function authenticate(
   }
 }
 
-// src/app/products/actions.ts
-// import postgres from "postgres";
+//Sellers
+export async function fetchAllSellers(): Promise<SellerProfile[]> {
+  return await sql<SellerProfile[]>`
+    SELECT 
+      s.category, s.description, s.image_url, s.phone, s.user_id,
+      u.firstname AS firstname,
+      u.lastname as lastname
+    FROM seller_profile s
+    JOIN users u ON s.user_id = u.user_id
+  `;
+}
 
-// const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+export async function fetchSellerById(
+  seller_id: string
+): Promise<SellerProfile[]> {
+  return await sql<SellerProfile[]>`
+    SELECT 
+      s.category, s.description, s.image_url, s.phone, s.user_id,
+      u.firstname AS firstname,
+      u.lastname as lastname
+    FROM seller_profile s
+    JOIN users u ON s.user_id = u.user_id
+    WHERE s.user_id = ${seller_id}
+  `;
+}
 
-export type ProductWithSeller = {
-  product_id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  user_id: string;
-  seller_category: string;
-  seller_firstname: string;
-  seller_lastname: string;
-};
+// Products
 
 export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
   return await sql<ProductWithSeller[]>`
@@ -128,5 +143,47 @@ export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
     JOIN seller_profile s ON p.user_id = s.user_id
     JOIN users u ON p.user_id = u.user_id
     ORDER BY p.name;
+  `;
+}
+
+export async function fetchProductsById(
+  seller_id: string
+): Promise<ProductWithSeller[]> {
+  return await sql<ProductWithSeller[]>`
+    SELECT 
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      s.category AS seller_category,
+      u.firstname AS seller_firstname,
+      u.lastname AS seller_lastname
+    FROM product p
+    JOIN seller_profile s ON p.user_id = s.user_id
+    JOIN users u ON p.user_id = u.user_id 
+    WHERE p.user_id = ${seller_id}
+    ORDER BY p.name;
+  `;
+}
+
+export async function fetchFeaturedProducts(): Promise<ProductWithSeller[]> {
+  return await sql<ProductWithSeller[]>`
+    SELECT 
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      s.category AS seller_category,
+      u.firstname AS seller_firstname,
+      u.lastname AS seller_lastname
+    FROM product p
+    JOIN seller_profile s ON p.user_id = s.user_id
+    JOIN users u ON p.user_id = u.user_id
+    ORDER BY RANDOM()
+    LIMIT 6;
+    `;
+}
+
+// stories
+export async function fetchStoryBySellerId(seller_id: string) {
+  return await sql`
+    SELECT story_id, content, created_at
+    FROM stories
+    WHERE user_id = ${seller_id}
+    ORDER BY created_at DESC
   `;
 }
