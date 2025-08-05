@@ -8,7 +8,6 @@ const links = [
   { name: "HomePage", href: "/" },
   { name: "Seller Profiles", href: "/profiles" },
   { name: "Product Listings", href: "/list" },
-  { name: "Reviews & Ratings", href: "/review" },
 ];
 
 export default function NavLinks() {
