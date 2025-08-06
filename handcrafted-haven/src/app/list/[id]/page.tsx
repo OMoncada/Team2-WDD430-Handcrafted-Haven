@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { fetchProductById } from "@/app/lib/actions";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default async function ProductPage({
   params,
@@ -16,13 +18,28 @@ export default async function ProductPage({
 
   return (
     <main>
-      <div>
+      <div className="flex flex-col items-center justify-center gap-5 mt-10">
+        <h1 className="text-3xl font-bold py-3">{product.name}</h1>
         <Image
           src={product.image}
           alt={product.name}
-          width={300}
+          width={400}
           height={192}
+          className="border-2 border-black rounded-2xl"
         />
+        <div>
+          <h2 className="text-2xl pt-3">{product.description}</h2>
+          <p className="font-bold text-green-600 mb-3 flex gap-2">
+            <CurrencyDollarIcon className="w-5" />
+            {product.price}
+          </p>
+          <Link
+            href={`/profiles/${product.user_id}`}
+            className="text-blue-600 hover:underline mt-auto"
+          >
+            By: {product.seller_firstname} {product.seller_lastname}
+          </Link>
+        </div>
       </div>
     </main>
   );

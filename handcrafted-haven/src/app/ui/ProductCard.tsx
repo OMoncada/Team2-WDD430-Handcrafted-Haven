@@ -39,8 +39,8 @@ export default function ProductCard({ product }: Props) {
 
       <Link
         key={product.product_id}
-        href={`/profiles/${product.product_id}`}
-        className="w-40 mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+        href={`/list/${product.product_id}`}
+        className="w-40 text-center mt-4 bg-black text-white px-4 py-2 rounded hover:scale-110 transition-transform duration-200"
       >
         See Product
       </Link>
