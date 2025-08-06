@@ -11,7 +11,6 @@ type Props = {
 };
 
 export default function ProductCard({ product }: Props) {
-  console.log(product);
   return (
     <div className="bg-[#F4EDE4] rounded-lg shadow-md overflow-hidden p-4 flex flex-col justify-between">
       <div className="w-72 h-48 mb-4 overflow-hidden rounded m-auto">
@@ -38,9 +37,13 @@ export default function ProductCard({ product }: Props) {
         {product.seller_category})
       </Link>
 
-      <button className="w-40 mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+      <Link
+        key={product.product_id}
+        href={`/profiles/${product.product_id}`}
+        className="w-40 mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+      >
         See Product
-      </button>
+      </Link>
     </div>
   );
 }

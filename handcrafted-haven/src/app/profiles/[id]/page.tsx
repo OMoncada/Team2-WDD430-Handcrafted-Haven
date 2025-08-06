@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { fetchProductsById } from "@/app/lib/actions";
+import { fetchProductsBySellerId } from "@/app/lib/actions";
 import ProductCard from "@/app/ui/ProductCard";
 import { fetchSellerById } from "@/app/lib/actions";
 import { fetchStoryBySellerId } from "@/app/lib/actions";
@@ -20,7 +20,7 @@ export default async function SellerProfilePage({
 
   const profile = seller[0];
 
-  const products = await fetchProductsById(id);
+  const products = await fetchProductsBySellerId(id);
 
   const stories = await fetchStoryBySellerId(id);
 
