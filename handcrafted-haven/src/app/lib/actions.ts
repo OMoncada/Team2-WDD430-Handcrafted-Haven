@@ -5,12 +5,11 @@ import { signIn } from "../../../auth";
 import { AuthError } from "next-auth";
 import postgres from "postgres";
 import bcrypt from "bcryptjs";
-import { ProductWithSeller } from "./definitions";
-import { SellerProfile } from "./definitions";
+import { ProductWithSeller, SellerProfile } from "./definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-// Registration process
+/* -------------------- REGISTRATION -------------------- */
 const registerSchema = z
   .object({
     firstname: z.string().min(1, "First name must be at least 3 characters."),
@@ -84,7 +83,7 @@ export async function register(
   }
 }
 
-//Login process
+/* -------------------- LOGIN -------------------- */
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData
@@ -104,34 +103,31 @@ export async function authenticate(
   }
 }
 
-//Sellers
+/* -------------------- SELLERS -------------------- */
 export async function fetchAllSellers(): Promise<SellerProfile[]> {
   return await sql<SellerProfile[]>`
     SELECT 
       s.category, s.description, s.image_url, s.phone, s.user_id,
       u.firstname AS firstname,
-      u.lastname as lastname
+      u.lastname AS lastname
     FROM seller_profile s
     JOIN users u ON s.user_id = u.user_id
   `;
 }
 
-export async function fetchSellerById(
-  seller_id: string
-): Promise<SellerProfile[]> {
+export async function fetchSellerById(seller_id: string): Promise<SellerProfile[]> {
   return await sql<SellerProfile[]>`
     SELECT 
       s.category, s.description, s.image_url, s.phone, s.user_id,
       u.firstname AS firstname,
-      u.lastname as lastname
+      u.lastname AS lastname
     FROM seller_profile s
     JOIN users u ON s.user_id = u.user_id
     WHERE s.user_id = ${seller_id}
   `;
 }
 
-// Products
-
+/* -------------------- PRODUCTS -------------------- */
 export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
   return await sql<ProductWithSeller[]>`
     SELECT 
@@ -146,9 +142,7 @@ export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
   `;
 }
 
-export async function fetchProductsById(
-  seller_id: string
-): Promise<ProductWithSeller[]> {
+export async function fetchProductsById(seller_id: string): Promise<ProductWithSeller[]> {
   return await sql<ProductWithSeller[]>`
     SELECT 
       p.product_id, p.name, p.price, p.description, p.image, p.user_id,
@@ -175,15 +169,70 @@ export async function fetchFeaturedProducts(): Promise<ProductWithSeller[]> {
     JOIN users u ON p.user_id = u.user_id
     ORDER BY RANDOM()
     LIMIT 6;
-    `;
+  `;
 }
 
-// stories
+/* -------------------- STORIES -------------------- */
 export async function fetchStoryBySellerId(seller_id: string) {
   return await sql`
     SELECT story_id, content, created_at
     FROM stories
     WHERE user_id = ${seller_id}
     ORDER BY created_at DESC
+  `;
+}
+
+/* -------------------- FILTERED PRODUCTS -------------------- */
+export async function fetchFilteredProducts(searchParams: {
+  categories?: string;
+  sellers?: string;
+  price?: string;
+}): Promise<ProductWithSeller[]> {
+  const { categories, sellers, price } = searchParams;
+
+  const conditions = [];
+
+  if (categories) {
+    conditions.push(sql`s.category = ${categories}`);
+  }
+
+  if (sellers) {
+    conditions.push(sql`u.user_id = ${sellers}`);
+  }
+
+  if (price) {
+    if (price === "under-1500") {
+      conditions.push(sql`p.price < 1500`);
+    } else if (price === "1500-3000") {
+      conditions.push(sql`p.price BETWEEN 1500 AND 3000`);
+    } else if (price === "above-3000") {
+      conditions.push(sql`p.price > 3000`);
+    }
+  }
+
+  const whereClause =
+    conditions.length > 0
+      ? sql`WHERE ${conditions.map((c, i) => (i === 0 ? c : sql`AND ${c}`))}`
+      : sql``;
+
+  return await sql<ProductWithSeller[]>`
+    SELECT 
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      s.category AS seller_category,
+      u.firstname AS seller_firstname,
+      u.lastname AS seller_lastname
+    FROM product p
+    JOIN seller_profile s ON p.user_id = s.user_id
+    JOIN users u ON p.user_id = u.user_id
+    ${whereClause}
+    ORDER BY p.name;
+  `;
+}
+
+/* -------------------- CATEGORIES -------------------- */
+export async function fetchAllCategories(): Promise<{ category_id: string; category_name: string }[]> {
+  return await sql`
+    SELECT DISTINCT category AS category_name, category AS category_id
+    FROM seller_profile
   `;
 }

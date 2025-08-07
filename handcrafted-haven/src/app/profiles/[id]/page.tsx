@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { fetchProductsById } from "@/app/lib/actions";
-import ProductCard from "@/app/ui/ProductCard";
+import ProductCard from "@/app/ui/catalog/ProductCard";
 import { fetchSellerById } from "@/app/lib/actions";
 import { fetchStoryBySellerId } from "@/app/lib/actions";
 import { PhoneIcon } from "@heroicons/react/16/solid";
