@@ -23,6 +23,7 @@ export default function ProductCard({ product }: Props) {
         />
       </div>
       <h2 className="text-xl font-semibold text-[#3e2723]">{product.name}</h2>
+      <p>{product.category}</p>
       <p className="text-sm text-gray-700 mt-1 mb-2">{product.description}</p>
       <p className="font-bold text-green-600 mb-3 flex gap-2">
         <CurrencyDollarIcon className="w-5" />

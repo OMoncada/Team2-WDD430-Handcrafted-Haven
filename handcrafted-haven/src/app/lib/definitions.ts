@@ -23,6 +23,7 @@ export type Products = {
   price: number;
   description?: string;
   image?: string;
+  category?: string;
 };
 
 export type ProductWithSeller = {

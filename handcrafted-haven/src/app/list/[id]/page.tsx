@@ -29,6 +29,7 @@ export default async function ProductPage({
         />
         <div>
           <h2 className="text-2xl pt-3">{product.description}</h2>
+          <p>{product.category}</p>
           <p className="font-bold text-green-600 mb-3 flex gap-2">
             <CurrencyDollarIcon className="w-5" />
             {product.price}

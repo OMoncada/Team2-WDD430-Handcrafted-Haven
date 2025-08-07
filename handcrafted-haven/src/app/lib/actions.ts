@@ -135,7 +135,7 @@ export async function fetchSellerById(
 export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
   return await sql<ProductWithSeller[]>`
     SELECT 
-      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id, p.category,
       s.category AS seller_category,
       u.firstname AS seller_firstname,
       u.lastname AS seller_lastname
@@ -150,7 +150,7 @@ export async function fetchProductById(
   product_id: string
 ): Promise<ProductWithSeller[]> {
   return await sql<ProductWithSeller[]>` SELECT 
-      p.product_id, p.name, p.price, p.description, p.image, p.user_id,
+      p.product_id, p.name, p.price, p.description, p.image, p.user_id, p.category,
       s.category AS seller_category,
       u.firstname AS seller_firstname,
       u.lastname AS seller_lastname
