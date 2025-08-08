@@ -131,3 +131,26 @@ export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
     ORDER BY p.name;
   `;
 }
+
+// Add Product
+export async function addProduct(userId: string, formData: FormData) {
+  const name = formData.get("name") as string;
+  const price = Number(formData.get("price"));
+  const description = formData.get("description") as string;
+  const image = formData.get("image") as string;
+
+  await sql`
+    INSERT INTO product (user_id, name, price, description, image)
+    VALUES (${userId}, ${name}, ${price}, ${description}, ${image})
+  `;
+}
+
+// Add Story
+export async function addStory(userId: string, formData: FormData) {
+  const content = formData.get("content") as string;
+
+  await sql`
+    INSERT INTO stories (user_id, content, created_at)
+    VALUES (${userId}, ${content}, NOW())
+  `;
+}
