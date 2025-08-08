@@ -1,17 +1,21 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { fetchProductsBySellerId } from "@/app/lib/actions";
-import ProductCard from "@/app/ui/ProductCard";
+import ProductCard from "@/app/ui/catalog/ProductCard";
 import { fetchSellerById } from "@/app/lib/actions";
 import { fetchStoryBySellerId } from "@/app/lib/actions";
 import { PhoneIcon } from "@heroicons/react/16/solid";
 import { BookOpenIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon } from "@heroicons/react/16/solid";
+import { auth } from "../../../../auth";
+import { StoryTrigger } from "@/app/ui/catalog/stories/StorieTrigger";
 
 export default async function SellerProfilePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth();
   const { id } = await params;
 
   const seller = await fetchSellerById(id);
@@ -55,7 +59,7 @@ export default async function SellerProfilePage({
         </div>
       </section>
 
-      {/* Productos */}
+      {/* Products */}
       <section className="py-10 px-4 rounded-lg">
         <h2 className="text-2xl font-semibold mb-6 text-center text-[#3e2723]">
           Products
@@ -67,24 +71,32 @@ export default async function SellerProfilePage({
         </div>
       </section>
 
-      {/* Historias */}
+      {/* Stories */}
       <section className="mt-16 px-4 max-w-4xl mx-auto">
         <h2 className="text-2xl font-semibold mb-6 text-[#3e2723] text-center">
           My Stories
         </h2>
-        <div className="grid gap-4">
-          {stories.map((story) => (
-            <div
-              key={story.story_id}
-              className="bg-white border border-[#ddd] rounded-lg shadow p-6"
-            >
-              <p className="text-gray-800 mb-3">{story.content}</p>
-              <p className="text-sm text-gray-500">
-                📅 {new Date(story.created_at).toLocaleDateString()}
-              </p>
+        <div className="flex flex-col">
+          {stories.length ? (
+            stories.map((story) => (
+              <div
+                key={story.story_id}
+                className="bg-[#F4EDE4] border border-[#ddd] rounded-lg shadow p-6"
+              >
+                <p className="text-gray-800 mb-3">{story.content}</p>
+                <p className="text-sm text-gray-700 flex items-center gap-2">
+                  <CalendarDaysIcon className="w-6 text-black" />
+                  {new Date(story.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            ))
+          ) : (
+            <div className="bg-[#F4EDE4] border border-[#ddd] rounded-lg shadow p-6">
+              <p className="text-gray-800 mb-3">No stories yet.</p>
             </div>
-          ))}
+          )}
         </div>
+        {session?.user.id === id ? <StoryTrigger user_id={id} /> : <></>}
       </section>
     </main>
   );

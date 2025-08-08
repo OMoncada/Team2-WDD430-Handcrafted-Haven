@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { fetchFeaturedProducts } from "../lib/actions";
-import ProductCard from "../ui/ProductCard";
+import ProductCard from "../ui/catalog/ProductCard";
 
 export default async function Page() {
   const products = await fetchFeaturedProducts();
@@ -29,10 +29,10 @@ export default async function Page() {
         Buy with purpose and give the best of traditional craftsmanship.
       </p>
       <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4 max-w-7xl">
-          {products.map((product) => (
-            <ProductCard key={product.product_id} product={product} />
-          ))}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4 w-full max-w-5xl">
+    {products.map((product) => (
+      <ProductCard key={product.product_id} product={product} />
+    ))}
         </div>
       </div>
     </main>
