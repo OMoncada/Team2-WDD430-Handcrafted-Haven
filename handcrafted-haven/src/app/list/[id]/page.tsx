@@ -6,6 +6,7 @@ import Link from "next/link";
 import { auth } from "../../../../auth";
 import ReviewCard from "@/app/ui/Reviews";
 import { fetchReviewsByProducts } from "@/app/lib/actions";
+import EditableDescription from "@/app/ui/EditableDescription";
 
 export default async function ProductPage({
   params,
@@ -56,6 +57,13 @@ export default async function ProductPage({
             product_id={id}
           />
         </div>
+        // ✅ Server Component (no hooks)
+        <EditableDescription
+          initialDescription={product.description}
+          productId={id}
+          currentUserId={session?.user?.id || null}
+          productOwnerId={product.user_id}
+        />
       </div>
     </main>
   );
