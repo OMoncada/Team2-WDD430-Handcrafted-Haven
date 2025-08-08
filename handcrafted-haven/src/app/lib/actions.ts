@@ -243,13 +243,13 @@ export async function postNewStory(
     revalidatePath(`/profiles/${user_id}`);
     return {
       success: true,
-      message: "¡Historia publicada con éxito!",
+      message: "¡Story added successfully!",
     };
   } catch (error) {
     console.error("Database Error:", error);
     return {
       success: false,
-      message: "Error al publicar la historia. Por favor, inténtalo de nuevo.",
+      message: "Error adding the story, try again.",
     };
   }
 }
