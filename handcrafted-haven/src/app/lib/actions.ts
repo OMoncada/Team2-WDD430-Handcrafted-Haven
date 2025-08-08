@@ -118,6 +118,7 @@ export type ProductWithSeller = {
 };
 
 export async function fetchAllProducts(): Promise<ProductWithSeller[]> {
+  await new Promise((res) => setTimeout(res, 2000)); // simulate delay
   return await sql<ProductWithSeller[]>`
     SELECT 
       p.product_id, p.name, p.price, p.description, p.image, p.user_id,
