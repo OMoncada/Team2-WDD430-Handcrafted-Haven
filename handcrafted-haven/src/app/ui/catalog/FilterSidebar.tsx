@@ -16,7 +16,6 @@ export default function FilterSidebar({ categories, sellers }: Props) {
     const params = new URLSearchParams(searchParams.toString());
 
     if (params.get(key) === value) {
-      
       params.delete(key);
     } else {
       params.set(key, value);
@@ -31,9 +30,10 @@ export default function FilterSidebar({ categories, sellers }: Props) {
         Filter Products
       </h2>
 
-      {/* Categorías */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-3 text-[#ffe0b2]">Categories</h3>
+        <h3 className="text-lg font-semibold mb-3 text-[#ffe0b2]">
+          Categories
+        </h3>
         <div className="space-y-2">
           {categories.map((cat) => (
             <label key={cat.category_id} className="flex items-center text-sm">
@@ -42,7 +42,9 @@ export default function FilterSidebar({ categories, sellers }: Props) {
                 name="category"
                 value={cat.category_id}
                 checked={searchParams.get("categories") === cat.category_id}
-                onChange={() => handleFilterChange("categories", cat.category_id)}
+                onChange={() =>
+                  handleFilterChange("categories", cat.category_id)
+                }
                 className="mr-3 accent-[#d7ccc8]"
               />
               {cat.category_name}
@@ -53,7 +55,6 @@ export default function FilterSidebar({ categories, sellers }: Props) {
 
       <hr className="border-t border-[#bcaaa4] my-4" />
 
-      {/* Artesanos */}
       <div className="mb-8">
         <h3 className="text-lg font-semibold mb-3 text-[#ffe0b2]">Artisans</h3>
         <div className="space-y-2">
@@ -75,14 +76,15 @@ export default function FilterSidebar({ categories, sellers }: Props) {
 
       <hr className="border-t border-[#bcaaa4] my-4" />
 
-      {/* Rango de Precios */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-3 text-[#ffe0b2]">Price Range</h3>
+        <h3 className="text-lg font-semibold mb-3 text-[#ffe0b2]">
+          Price Range
+        </h3>
         <div className="space-y-2 text-sm flex flex-col">
           {[
-            { value: "under-1500", label: "Under $1,500" },
-            { value: "1500-3000", label: "$1,500 – $3,000" },
-            { value: "above-3000", label: "Above $3,000" },
+            { value: "under-15", label: "Under $15" },
+            { value: "15-30", label: "$15 – $30" },
+            { value: "above-30", label: "Above $30" },
           ].map(({ value, label }) => (
             <label key={value}>
               <input

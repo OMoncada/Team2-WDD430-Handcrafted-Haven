@@ -23,7 +23,6 @@ export default async function ProductListPage({
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Filtros */}
         <div className="w-full lg:w-1/4">
           <FilterSidebar
             categories={categories}
@@ -34,7 +33,6 @@ export default async function ProductListPage({
           />
         </div>
 
-        {/* Productos */}
         <div className="w-full lg:w-3/4">
           <div className="flex justify-center">
             {products.length === 0 ? (

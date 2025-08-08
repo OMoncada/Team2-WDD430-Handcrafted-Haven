@@ -196,7 +196,7 @@ export default function RegisterForm() {
           <button
             className="mt-4 w-full bg-black text-white rounded-2xl py-2 cursor-pointer border-2 border-black hover:bg-white hover:text-black transition duration-1000"
             aria-disabled={isPending}
-            disabled={isPending || result?.success} // Disable after successful submission
+            disabled={isPending || result?.success}
           >
             {isPending ? "Registering..." : "Register"}
           </button>

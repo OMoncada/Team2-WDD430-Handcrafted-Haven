@@ -23,6 +23,7 @@ export type Products = {
   price: number;
   description?: string;
   image?: string;
+  category?: string;
 };
 
 export type ProductWithSeller = {
@@ -39,7 +40,12 @@ export type ProductWithSeller = {
 };
 
 export type Review = {
-  review_id: string;
+  review_id?: string;
+  user_id: string;
+  firstname?: string;
+  lastname?: string;
+  product_id: string;
   review?: string;
   rating: number;
+  created_at: Date;
 };
