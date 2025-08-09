@@ -15,18 +15,20 @@ type Props = {
 
 export function EditableDescription({ product, isOwner }: Props) {
   const [isEditing, setIsEditing] = useState(false);
+  const [formKey, setFormKey] = useState(Date.now());
 
   const initialState: DescriptionFormState = { success: false };
-  const [state, formAction, isPending] = useActionState(
-    updateProductDescription,
-    initialState
-  );
+  const [state, formAction, isPending] = useActionState<
+    DescriptionFormState,
+    FormData
+  >(updateProductDescription, initialState);
 
   useEffect(() => {
     if (state.success) {
       setIsEditing(false);
+      setFormKey(Date.now());
     }
-  }, [state.success]);
+  }, [state]);
 
   if (!isOwner) {
     return (
@@ -39,7 +41,7 @@ export function EditableDescription({ product, isOwner }: Props) {
   return (
     <div className="mt-4 w-[500px]">
       {isEditing ? (
-        <form action={formAction} className="space-y-2">
+        <form key={formKey} action={formAction} className="space-y-2">
           <input type="hidden" name="product_id" value={product.product_id} />
           <textarea
             name="description"
