@@ -57,7 +57,6 @@ export default async function ProductPage({
             product_id={id}
           />
         </div>
-        // ✅ Server Component (no hooks)
         <EditableDescription
           initialDescription={product.description}
           productId={id}

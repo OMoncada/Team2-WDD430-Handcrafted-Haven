@@ -7,7 +7,6 @@ type Props = {
   productId: string;
   currentUserId: string | null;
   productOwnerId: string;
-  //   onUpdated: () => void;
 };
 
 export default function EditableDescription({
@@ -16,7 +15,7 @@ export default function EditableDescription({
   currentUserId,
   productOwnerId,
 }: Props) {
-  const [isEditing, setIsEditing] = useState(!initialDescription); // auto-edit if no description
+  const [isEditing, setIsEditing] = useState(!initialDescription);
   const [description, setDescription] = useState(initialDescription || "");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -41,16 +40,14 @@ export default function EditableDescription({
       }
 
       setIsEditing(false);
-      window.location.reload(); // Reload to reflect changes
-    } catch (e: any) {
-      setError(e.message);
+      window.location.reload();
+    } catch (error) {
     } finally {
       setLoading(false);
     }
   }
 
   if (!canEdit) {
-    // Just display description or "No description yet"
     return <p>{initialDescription || "No description yet."}</p>;
   }
 
