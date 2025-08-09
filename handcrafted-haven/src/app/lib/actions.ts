@@ -393,3 +393,53 @@ export async function fetchProductStats(product_id: string) {
     throw new Error("Failed to fetch product statistics.");
   }
 }
+
+// Description
+const descriptionSchema = z.object({
+  product_id: z.uuid(),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters long.")
+    .max(500),
+});
+
+export type DescriptionFormState = {
+  success: boolean;
+  message?: string;
+  errors?: z.ZodFormattedError<{ description: string; product_id: string }>;
+};
+
+export async function updateProductDescription(
+  prevState: DescriptionFormState | undefined,
+  formData: FormData
+): Promise<DescriptionFormState> {
+  const rawData = {
+    product_id: formData.get("product_id"),
+    description: formData.get("description"),
+  };
+
+  const result = descriptionSchema.safeParse(rawData);
+
+  if (!result.success) {
+    return {
+      success: false,
+      errors: result.error.format(),
+    };
+  }
+
+  const { product_id, description } = result.data;
+
+  try {
+    await sql`
+      UPDATE product
+      SET description = ${description}
+      WHERE product_id = ${product_id};
+    `;
+
+    revalidatePath(`/list/${product_id}`);
+    return { success: true, message: "Description updated successfully." };
+  } catch (error) {
+    console.error("Database Error:", error);
+    return { success: false, message: "Failed to update description." };
+  }
+}

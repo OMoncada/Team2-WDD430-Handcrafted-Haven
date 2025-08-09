@@ -6,6 +6,7 @@ import Link from "next/link";
 import { auth } from "../../../../auth";
 import ReviewCard from "@/app/ui/Reviews";
 import { fetchReviewsByProducts } from "@/app/lib/actions";
+import { EditableDescription } from "@/app/ui/EditableDescription";
 
 export default async function ProductPage({
   params,
@@ -35,7 +36,10 @@ export default async function ProductPage({
             className="border-2 border-black rounded-2xl"
           />
           <div>
-            <h2 className="text-2xl pt-3">{product.description}</h2>
+            <EditableDescription
+              product={product}
+              isOwner={session?.user.id === product.user_id}
+            />
             <p className="text-xl font-bold py-2">{product.category}</p>
             <p className="font-bold text-green-600 mb-3 flex gap-2">
               <CurrencyDollarIcon className="w-5" />
