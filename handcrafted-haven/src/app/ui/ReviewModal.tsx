@@ -81,7 +81,7 @@ export function ReviewModal({ user_id, product_id, onClose }: Props) {
 
             <div>
               <label htmlFor="review-text" className="block font-medium mb-1">
-                Reseña:
+                Review:
               </label>
               <textarea
                 id="review-text"
