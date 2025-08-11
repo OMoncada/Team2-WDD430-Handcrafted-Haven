@@ -21,12 +21,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "text-sm md:text-base md:p-1 hover:bg-black hover:text-white rounded-sm font-bold transition duration-1000",
-              {
-                "bg-black text-white hover:bg-gray-600 transition duration-700":
-                  pathname === link.href,
-              }
-            )}
+  "block text-sm md:text-base md:p-1 hover:bg-black hover:text-white rounded-sm font-bold transition",
+  { "bg-black text-white": pathname === link.href }
+)}
+
           >
             <p className="px-2">{link.name}</p>
           </Link>
