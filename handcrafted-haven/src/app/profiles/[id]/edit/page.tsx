@@ -11,8 +11,8 @@ import {
   updateProductFull,
   createProduct,
   updateStoryContent,
-  deleteProduct, 
-  deleteStory, 
+  deleteProduct,
+  deleteStory,
 } from "@/app/lib/sellerActions";
 
 /* -------------------- ESTILOS REUTILIZADOS -------------------- */
@@ -80,11 +80,13 @@ export default async function EditSellerPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ id: string }>; // ✅ PPR: Promise
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; // ✅ PPR: Promise (opcional)
 }) {
   const session = await auth();
-  const seller_id = params.id;
+
+  const { id: seller_id } = await params; // ✅ esperar params
+  const sp = (await searchParams) ?? {};   // ✅ esperar searchParams (si existe)
 
   if (!session?.user) redirect("/login");
   if (session.user.id !== seller_id) notFound();
@@ -94,7 +96,7 @@ export default async function EditSellerPage({
 
   const products = await fetchProductsBySellerId(seller_id);
   const stories = await fetchStoryBySellerId(seller_id);
-  const showSaved = searchParams.saved === "1";
+  const showSaved = sp["saved"] === "1";
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
