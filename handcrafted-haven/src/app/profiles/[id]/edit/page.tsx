@@ -74,19 +74,18 @@ async function removeStory(formData: FormData): Promise<void> {
   redirect(`/profiles/${user_id}/edit?saved=1`);
 }
 
-/* -------------------- PAGINA NUEVA ------------------------- */
-
+/* -------------------- PÁGINA ------------------------- */
 export default async function EditSellerPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>; // ✅ PPR: Promise
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; // ✅ PPR: Promise (opcional)
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await auth();
 
-  const { id: seller_id } = await params; // ✅ esperar params
-  const sp = (await searchParams) ?? {};   // ✅ esperar searchParams (si existe)
+  const { id: seller_id } = await params;
+  const sp = searchParams ? await searchParams : {}; // ✅ seguro
 
   if (!session?.user) redirect("/login");
   if (session.user.id !== seller_id) notFound();
@@ -116,10 +115,7 @@ export default async function EditSellerPage({
           <h2 className="text-xl font-semibold">Basic info</h2>
         </div>
 
-        <form
-          action={saveBasics}
-          className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5"
-        >
+        <form action={saveBasics} className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
           <input type="hidden" name="user_id" value={seller_id} />
 
           <div>
@@ -197,26 +193,18 @@ export default async function EditSellerPage({
 
         <div className="p-6 space-y-10">
           {products.map((p) => (
-            <div
-              key={p.product_id}
-              className="rounded-xl border border-black/10 bg-[#FAF7F1] p-5"
-            >
+            <div key={p.product_id} className="rounded-xl border border-black/10 bg-[#FAF7F1] p-5">
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="font-semibold text-[#1f2937]">{p.name}</div>
                 {/* BOTON DELETE */}
                 <form action={removeProduct}>
                   <input type="hidden" name="product_id" value={p.product_id} />
                   <input type="hidden" name="user_id" value={seller_id} />
-                  <button className={btnDanger} title="Delete product">
-                    Delete
-                  </button>
+                  <button className={btnDanger} title="Delete product">Delete</button>
                 </form>
               </div>
 
-              <form
-                action={saveProduct}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-              >
+              <form action={saveProduct} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <input type="hidden" name="product_id" value={p.product_id} />
                 <input type="hidden" name="user_id" value={seller_id} />
 
@@ -243,9 +231,7 @@ export default async function EditSellerPage({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium mb-1">
-                    Image URL
-                  </label>
+                  <label className="block text-sm font-medium mb-1">Image URL</label>
                   <input
                     name="image"
                     defaultValue={p.image ?? ""}
@@ -254,9 +240,7 @@ export default async function EditSellerPage({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium mb-1">
-                    Description
-                  </label>
+                  <label className="block text-sm font-medium mb-1">Description</label>
                   <textarea
                     name="description"
                     defaultValue={p.description ?? ""}
@@ -278,10 +262,7 @@ export default async function EditSellerPage({
           {/* ===== ADD PRODUCT ===== */}
           <div className="rounded-xl border border-black/10 p-5">
             <h3 className="text-lg font-semibold mb-3">Add new product</h3>
-            <form
-              action={addProduct}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-            >
+            <form action={addProduct} className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <input type="hidden" name="user_id" value={seller_id} />
 
               <div>
@@ -305,9 +286,7 @@ export default async function EditSellerPage({
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium mb-1">
-                  Image URL
-                </label>
+                <label className="block text-sm font-medium mb-1">Image URL</label>
                 <input
                   name="image"
                   className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c49b63]"
@@ -315,9 +294,7 @@ export default async function EditSellerPage({
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium mb-1">
-                  Description
-                </label>
+                <label className="block text-sm font-medium mb-1">Description</label>
                 <textarea
                   name="description"
                   className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c49b63]"
@@ -326,9 +303,7 @@ export default async function EditSellerPage({
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium mb-1">
-                  Category
-                </label>
+                <label className="block text-sm font-medium mb-1">Category</label>
                 <input
                   name="category"
                   defaultValue={seller.category ?? ""}
@@ -371,19 +346,14 @@ export default async function EditSellerPage({
 
           {/* edit stories */}
           {stories.map((s) => (
-            <div
-              key={s.story_id}
-              className="rounded-xl border border-black/10 p-5"
-            >
+            <div key={s.story_id} className="rounded-xl border border-black/10 p-5">
               <div className="flex items-center justify-between gap-3 mb-3">
                 <h4 className="font-semibold">Edit story</h4>
                 {/* delete story */}
                 <form action={removeStory}>
                   <input type="hidden" name="story_id" value={s.story_id} />
                   <input type="hidden" name="user_id" value={seller_id} />
-                  <button className={btnDanger} title="Delete story">
-                    Delete
-                  </button>
+                  <button className={btnDanger} title="Delete story">Delete</button>
                 </form>
               </div>
 
@@ -399,9 +369,7 @@ export default async function EditSellerPage({
                 />
                 <div className="flex gap-3">
                   <button className={btnPrimary}>Save story</button>
-                  <button formAction={removeStory} className={btnDanger}>
-                    Delete
-                  </button>
+                  <button formAction={removeStory} className={btnDanger}>Delete</button>
                 </div>
               </form>
             </div>

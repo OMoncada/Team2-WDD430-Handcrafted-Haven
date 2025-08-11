@@ -13,6 +13,10 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { auth } from "../../../../auth";
 import { StoryTrigger } from "@/app/ui/catalog/stories/StorieTrigger";
 
+/** Fuerza render dinámico para que auth() tenga cookies en Vercel */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /* ===================== Tokens de estilo (colores/variantes) ===================== */
 const brand = {
   brown: "#3e2723",
@@ -59,10 +63,10 @@ function getCover(profile: { category?: string | null; cover_image_url?: string 
 export default async function SellerProfilePage({
   params,
 }: {
-  params: Promise<{ id: string }>; // 👈 PPR: params es Promise
+  params: Promise<{ id: string }>; // PPR: Promise
 }) {
   const session = await auth();
-  const { id } = await params;     // 👈 esperar antes de usar id
+  const { id } = await params;
 
   const seller = await fetchSellerById(id);
   if (!seller.length) return notFound();
@@ -71,7 +75,8 @@ export default async function SellerProfilePage({
   const products = await fetchProductsBySellerId(id);
   const stories = await fetchStoryBySellerId(id);
 
-  const isOwner = session?.user?.id === id;
+  // ✅ Más robusto: compara contra el user_id del perfil
+  const isOwner = session?.user?.id === profile.user_id;
 
   return (
     <main className="pb-12">
@@ -110,7 +115,7 @@ export default async function SellerProfilePage({
         <div className="max-w-7xl mx-auto px-4 relative">
           {isOwner && (
             <div className="hidden md:block absolute right-4 -top-12">
-              <Link href={`/profiles/${id}/edit`} className={btnPrimary}>
+              <Link href={`/profiles/${profile.user_id}/edit`} className={btnPrimary}>
                 EDIT PROFILE
               </Link>
             </div>
@@ -123,7 +128,7 @@ export default async function SellerProfilePage({
           </p>
           {isOwner && (
             <div className="mt-4 flex justify-center md:hidden">
-              <Link href={`/profiles/${id}/edit`} className={btnPrimary}>
+              <Link href={`/profiles/${profile.user_id}/edit`} className={btnPrimary}>
                 EDIT PROFILE
               </Link>
             </div>
@@ -214,7 +219,7 @@ export default async function SellerProfilePage({
 
             {isOwner ? (
               <div className="mt-4">
-                <StoryTrigger user_id={id} />
+                <StoryTrigger user_id={profile.user_id} />
               </div>
             ) : null}
           </div>
