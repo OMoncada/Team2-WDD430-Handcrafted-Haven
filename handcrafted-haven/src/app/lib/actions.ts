@@ -113,6 +113,7 @@ export async function fetchAllSellers(): Promise<SellerProfile[]> {
       u.lastname AS lastname
     FROM seller_profile s
     JOIN users u ON s.user_id = u.user_id
+    ORDER BY u.firstname ASC, u.lastname ASC;
   `;
 }
 
@@ -188,7 +189,7 @@ export async function fetchFeaturedProducts(): Promise<ProductWithSeller[]> {
     FROM product p
     JOIN seller_profile s ON p.user_id = s.user_id
     JOIN users u ON p.user_id = u.user_id
-    ORDER BY RANDOM()
+    ORDER BY p.name ASC
     LIMIT 6;
   `;
 }
@@ -254,38 +255,55 @@ export async function postNewStory(
   }
 }
 
-/* -------------------- FILTERED PRODUCTS -------------------- */
-export async function fetchFilteredProducts(searchParams: {
+// --- TOTAL DE PRODUCTOS CON LOS FILTROS ---
+export async function fetchFilteredProductsCount(searchParams: {
   categories?: string;
   sellers?: string;
   price?: string;
-}): Promise<ProductWithSeller[]> {
+}): Promise<number> {
   const { categories, sellers, price } = searchParams;
 
-  const conditions = [];
-
-  if (categories) {
-    conditions.push(sql`s.category = ${categories}`);
-  }
-
-  if (sellers) {
-    conditions.push(sql`u.user_id = ${sellers}`);
-  }
-
-  if (price) {
-    if (price === "under-15") {
-      conditions.push(sql`p.price < 15`);
-    } else if (price === "15-30") {
-      conditions.push(sql`p.price BETWEEN 15 AND 30`);
-    } else if (price === "above-30") {
-      conditions.push(sql`p.price > 30`);
+  const where = sql`
+    ${categories || sellers || price ? sql`WHERE 1=1` : sql``}
+    ${categories ? sql` AND s.category = ${categories}` : sql``}
+    ${sellers ? sql` AND u.user_id = ${sellers}` : sql``}
+    ${
+      price === "under-15" ? sql` AND p.price < 15` :
+      price === "15-30"    ? sql` AND p.price BETWEEN 15 AND 30` :
+      price === "above-30" ? sql` AND p.price > 30` :
+      sql``
     }
-  }
+  `;
 
-  const whereClause =
-    conditions.length > 0
-      ? sql`WHERE ${conditions.map((c, i) => (i === 0 ? c : sql`AND ${c}`))}`
-      : sql``;
+  const rows = await sql<{ count: number }[]>`
+    SELECT COUNT(*)::int AS count
+    FROM product p
+    JOIN seller_profile s ON p.user_id = s.user_id
+    JOIN users u ON p.user_id = u.user_id
+    ${where};
+  `;
+
+  return rows[0]?.count ?? 0;
+}
+
+// --- PRODUCTOS PAGINADOS ---
+export async function fetchFilteredProductsPaged(
+  searchParams: { categories?: string; sellers?: string; price?: string },
+  take: number
+): Promise<ProductWithSeller[]> {
+  const { categories, sellers, price } = searchParams;
+
+  const where = sql`
+    ${categories || sellers || price ? sql`WHERE 1=1` : sql``}
+    ${categories ? sql` AND s.category = ${categories}` : sql``}
+    ${sellers ? sql` AND u.user_id = ${sellers}` : sql``}
+    ${
+      price === "under-15" ? sql` AND p.price < 15` :
+      price === "15-30"    ? sql` AND p.price BETWEEN 15 AND 30` :
+      price === "above-30" ? sql` AND p.price > 30` :
+      sql``
+    }
+  `;
 
   return await sql<ProductWithSeller[]>`
     SELECT 
@@ -296,8 +314,9 @@ export async function fetchFilteredProducts(searchParams: {
     FROM product p
     JOIN seller_profile s ON p.user_id = s.user_id
     JOIN users u ON p.user_id = u.user_id
-    ${whereClause}
-    ORDER BY p.name;
+    ${where}
+    ORDER BY p.name ASC
+    LIMIT ${take};
   `;
 }
 
@@ -308,6 +327,7 @@ export async function fetchAllCategories(): Promise<
   return await sql`
     SELECT DISTINCT category AS category_name, category AS category_id
     FROM seller_profile
+    ORDER BY category_name ASC;
   `;
 }
 
