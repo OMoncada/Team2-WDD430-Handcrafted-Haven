@@ -1,4 +1,3 @@
-// app/ui/Reviews.tsx  (o src/app/ui/Reviews.tsx)
 import { Review } from "../lib/definitions";
 import { StarIcon } from "@heroicons/react/16/solid";
 import { Session } from "next-auth";
@@ -12,17 +11,19 @@ type Props = {
   product_id: string;
 };
 
-export default function ReviewCard({ reviews, authenticated, product_id }: Props) {
+export default function ReviewCard({
+  reviews,
+  authenticated,
+  product_id,
+}: Props) {
   const hasReviews = Array.isArray(reviews) && reviews.length > 0;
 
   return (
     <section className="w-full max-w-5xl mx-auto rounded-2xl border border-black/20 bg-[#F4EDE4] overflow-hidden">
-      {/* Header: promedio y conteo */}
       <div className="px-5 py-3 border-b border-black/20">
         <AverageRating product_id={product_id} />
       </div>
 
-      {/* Lista de reviews en grid responsivo (1 col → 2 cols en md) */}
       {hasReviews ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-5">
           {reviews.map((review) => {
@@ -32,7 +33,6 @@ export default function ReviewCard({ reviews, authenticated, product_id }: Props
                 key={review.review_id}
                 className="relative rounded-2xl border border-black/20 bg-white/60 p-4"
               >
-                {/* Banda lateral dorada */}
                 <span
                   aria-hidden
                   className="absolute left-0 top-3 bottom-3 w-1.5 rounded-full"
@@ -49,13 +49,17 @@ export default function ReviewCard({ reviews, authenticated, product_id }: Props
                   </div>
 
                   <div className="mt-1 flex items-center gap-1 text-yellow-500">
-                    {Array.from({ length: Number(review.rating) || 0 }).map((_, idx) => (
-                      <StarIcon key={idx} className="w-5 h-5" />
-                    ))}
+                    {Array.from({ length: Number(review.rating) || 0 }).map(
+                      (_, idx) => (
+                        <StarIcon key={idx} className="w-5 h-5" />
+                      )
+                    )}
                   </div>
 
                   {review.review ? (
-                    <p className="mt-3 text-[#1f2937] break-words">{review.review}</p>
+                    <p className="mt-3 text-[#1f2937] break-words">
+                      {review.review}
+                    </p>
                   ) : null}
                 </div>
               </article>
@@ -63,13 +67,17 @@ export default function ReviewCard({ reviews, authenticated, product_id }: Props
           })}
         </div>
       ) : (
-        <div className="p-5 text-[#1f2937]">No reviews :c, Be the first one to review!</div>
+        <div className="p-5 text-[#1f2937]">
+          No reviews :c, Be the first one to review!
+        </div>
       )}
 
-      {/* Footer: CTA según sesión */}
       <div className="px-5 py-4 border-t border-black/20">
         {authenticated?.user ? (
-          <ReviewTrigger user_id={authenticated.user.id} product_id={product_id} />
+          <ReviewTrigger
+            user_id={authenticated.user.id}
+            product_id={product_id}
+          />
         ) : (
           <Link
             href="/login"

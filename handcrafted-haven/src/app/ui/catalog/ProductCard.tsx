@@ -19,7 +19,6 @@ export default function ProductCard({ product }: Props) {
         bg-[#fdf8f3] flex flex-col overflow-hidden
       "
     >
-      {/* IMAGEN CON CATEGORIA EN LA ESQUINA */}
       <div className="relative">
         <Image
           src={product.image}
@@ -39,9 +38,7 @@ export default function ProductCard({ product }: Props) {
         </span>
       </div>
 
-      {/* CONTENIDO */}
       <div className="p-4 flex flex-col flex-grow">
-        {/* TITLO */}
         <div className="flex-grow">
           <h3 className="text-lg font-bold text-[#3e2723] text-center">
             {product.name}
@@ -51,7 +48,6 @@ export default function ProductCard({ product }: Props) {
           </p>
         </div>
 
-        {/*RATING + ACTOR */}
         <div className="mt-2">
           <div className="flex justify-center">
             <AverageRating product_id={product.product_id} />
@@ -65,7 +61,6 @@ export default function ProductCard({ product }: Props) {
           </Link>
         </div>
 
-        {/* PRECIO Y BOTON ALINEADOS */}
         <div className="mt-auto pt-4 flex items-center justify-between">
           <span className="inline-flex items-center gap-1 font-bold text-green-700">
             <CurrencyDollarIcon className="w-5 h-5" />

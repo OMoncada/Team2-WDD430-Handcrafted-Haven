@@ -13,9 +13,11 @@ export default function FilterSidebar({ categories, sellers }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ORDEN ALFABETICO
   const orderedCategories = useMemo(
-    () => [...categories].sort((a, b) => a.category_name.localeCompare(b.category_name)),
+    () =>
+      [...categories].sort((a, b) =>
+        a.category_name.localeCompare(b.category_name)
+      ),
     [categories]
   );
   const orderedSellers = useMemo(
@@ -23,12 +25,10 @@ export default function FilterSidebar({ categories, sellers }: Props) {
     [sellers]
   );
 
-  // ACORDEON
   const [openCat, setOpenCat] = useState(false);
   const [openSel, setOpenSel] = useState(false);
   const [openPrice, setOpenPrice] = useState(false);
 
-  // ABRIR PANEL SI HAY ALGO SELECCIONADO
   useEffect(() => {
     if (searchParams.get("categories")) setOpenCat(true);
     if (searchParams.get("sellers")) setOpenSel(true);
@@ -47,7 +47,6 @@ export default function FilterSidebar({ categories, sellers }: Props) {
     !!searchParams.get("sellers") ||
     !!searchParams.get("price");
 
-  // === ESTILOS PARA MOBILE ===
   const radioClass = "mr-3 accent-[#ffe0b2] scale-90 sm:scale-100";
 
   const Row = ({
@@ -100,18 +99,26 @@ export default function FilterSidebar({ categories, sellers }: Props) {
         Filter Products
       </h2>
 
-      {/*CATEGORIES */}
-      <Row label="Categories" open={openCat} onToggle={() => setOpenCat((v) => !v)} />
+      <Row
+        label="Categories"
+        open={openCat}
+        onToggle={() => setOpenCat((v) => !v)}
+      />
       <Panel id="categories-panel" open={openCat}>
         <div className="space-y-2">
           {orderedCategories.map((cat) => (
-            <label key={cat.category_id} className="flex items-center text-[15px] sm:text-sm">
+            <label
+              key={cat.category_id}
+              className="flex items-center text-[15px] sm:text-sm"
+            >
               <input
                 type="radio"
                 name="category"
                 value={cat.category_id}
                 checked={searchParams.get("categories") === cat.category_id}
-                onChange={() => handleFilterChange("categories", cat.category_id)}
+                onChange={() =>
+                  handleFilterChange("categories", cat.category_id)
+                }
                 className={radioClass}
               />
               {cat.category_name}
@@ -120,12 +127,18 @@ export default function FilterSidebar({ categories, sellers }: Props) {
         </div>
       </Panel>
 
-      {/* ANTISANS */}
-      <Row label="Artisans" open={openSel} onToggle={() => setOpenSel((v) => !v)} />
+      <Row
+        label="Artisans"
+        open={openSel}
+        onToggle={() => setOpenSel((v) => !v)}
+      />
       <Panel id="artisans-panel" open={openSel}>
         <div className="space-y-2">
           {orderedSellers.map((s) => (
-            <label key={s.id} className="flex items-center text-[15px] sm:text-sm">
+            <label
+              key={s.id}
+              className="flex items-center text-[15px] sm:text-sm"
+            >
               <input
                 type="radio"
                 name="seller"
@@ -140,8 +153,11 @@ export default function FilterSidebar({ categories, sellers }: Props) {
         </div>
       </Panel>
 
-      {/* PRICE */}
-      <Row label="Price Range" open={openPrice} onToggle={() => setOpenPrice((v) => !v)} />
+      <Row
+        label="Price Range"
+        open={openPrice}
+        onToggle={() => setOpenPrice((v) => !v)}
+      />
       <Panel id="price-range-panel" open={openPrice}>
         <div className="space-y-2">
           {[
@@ -149,7 +165,10 @@ export default function FilterSidebar({ categories, sellers }: Props) {
             { value: "15-30", label: "$15 – $30" },
             { value: "above-30", label: "Above $30" },
           ].map(({ value, label }) => (
-            <label key={value} className="flex items-center text-[15px] sm:text-sm">
+            <label
+              key={value}
+              className="flex items-center text-[15px] sm:text-sm"
+            >
               <input
                 type="radio"
                 name="price"
@@ -164,11 +183,14 @@ export default function FilterSidebar({ categories, sellers }: Props) {
         </div>
       </Panel>
 
-      {/* CLEAR */}
       <div className="flex justify-center pt-3 sm:pt-4">
         <button
           onClick={() => router.push(pathname, { scroll: false })}
-          className={`text-sm ${hasAny ? "text-[#ffe0b2] hover:underline" : "text-[#ffe0b2]/50 cursor-not-allowed"}`}
+          className={`text-sm ${
+            hasAny
+              ? "text-[#ffe0b2] hover:underline"
+              : "text-[#ffe0b2]/50 cursor-not-allowed"
+          }`}
           disabled={!hasAny}
         >
           Clear Filters

@@ -255,7 +255,6 @@ export async function postNewStory(
   }
 }
 
-// --- TOTAL DE PRODUCTOS CON LOS FILTROS ---
 export async function fetchFilteredProductsCount(searchParams: {
   categories?: string;
   sellers?: string;
@@ -268,10 +267,13 @@ export async function fetchFilteredProductsCount(searchParams: {
     ${categories ? sql` AND s.category = ${categories}` : sql``}
     ${sellers ? sql` AND u.user_id = ${sellers}` : sql``}
     ${
-      price === "under-15" ? sql` AND p.price < 15` :
-      price === "15-30"    ? sql` AND p.price BETWEEN 15 AND 30` :
-      price === "above-30" ? sql` AND p.price > 30` :
-      sql``
+      price === "under-15"
+        ? sql` AND p.price < 15`
+        : price === "15-30"
+        ? sql` AND p.price BETWEEN 15 AND 30`
+        : price === "above-30"
+        ? sql` AND p.price > 30`
+        : sql``
     }
   `;
 
@@ -286,7 +288,7 @@ export async function fetchFilteredProductsCount(searchParams: {
   return rows[0]?.count ?? 0;
 }
 
-// --- PRODUCTOS PAGINADOS ---
+// Pagination
 export async function fetchFilteredProductsPaged(
   searchParams: { categories?: string; sellers?: string; price?: string },
   take: number
@@ -298,10 +300,13 @@ export async function fetchFilteredProductsPaged(
     ${categories ? sql` AND s.category = ${categories}` : sql``}
     ${sellers ? sql` AND u.user_id = ${sellers}` : sql``}
     ${
-      price === "under-15" ? sql` AND p.price < 15` :
-      price === "15-30"    ? sql` AND p.price BETWEEN 15 AND 30` :
-      price === "above-30" ? sql` AND p.price > 30` :
-      sql``
+      price === "under-15"
+        ? sql` AND p.price < 15`
+        : price === "15-30"
+        ? sql` AND p.price BETWEEN 15 AND 30`
+        : price === "above-30"
+        ? sql` AND p.price > 30`
+        : sql``
     }
   `;
 

@@ -31,7 +31,6 @@ export default async function NavBar() {
           </Link>
         </div>
 
-        {/* ENLACES + AUTH */}
         <div className="hidden md:flex flex-wrap p-4 gap-3 justify-end items-center">
           <NavLinks />
           {!authenticated ? (
@@ -68,7 +67,6 @@ export default async function NavBar() {
           )}
         </div>
 
-        {/* VISTA MOBILE BURGER */}
         <div className="md:hidden pr-3">
           <NavHamburger
             authenticated={authenticated}

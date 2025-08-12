@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-/** ACTUALIZACION PARA VENDEDORES */
 export async function updateSellerBasics(formData: FormData): Promise<void> {
   const user_id = String(formData.get("user_id"));
   const firstname = String(formData.get("firstname") ?? "");
@@ -35,7 +34,6 @@ export async function updateSellerBasics(formData: FormData): Promise<void> {
   revalidatePath(`/profiles/${user_id}/edit`);
 }
 
-/** ACTUALIZACION PARA LOS PRODUCTOS */
 export async function updateProductFull(formData: FormData): Promise<void> {
   const product_id = String(formData.get("product_id"));
   const name = String(formData.get("name") ?? "");
@@ -55,7 +53,6 @@ export async function updateProductFull(formData: FormData): Promise<void> {
   revalidatePath(`/list/${product_id}`);
 }
 
-/** CREA UN PRODUCTO */
 export async function createProduct(formData: FormData): Promise<void> {
   const user_id = String(formData.get("user_id"));
   const name = String(formData.get("name") ?? "");
@@ -73,7 +70,6 @@ export async function createProduct(formData: FormData): Promise<void> {
   revalidatePath(`/profiles/${user_id}/edit`);
 }
 
-/** EDITA LAS HISTORIAS */
 export async function updateStoryContent(formData: FormData): Promise<void> {
   const story_id = String(formData.get("story_id"));
   const content = String(formData.get("content") ?? "");
@@ -89,11 +85,8 @@ export async function updateStoryContent(formData: FormData): Promise<void> {
   revalidatePath(`/profiles/${user_id}/edit`);
 }
 
-/** ELIMINA HISTORIAS Y PRODUCTOS */
-
 export async function deleteProduct(formData: FormData) {
   const product_id = String(formData.get("product_id"));
-
 }
 
 export async function deleteStory(formData: FormData) {

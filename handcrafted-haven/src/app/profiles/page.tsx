@@ -9,7 +9,6 @@ export default async function ProfilesPage() {
 
   return (
     <main className="w-full">
-      {/* HERO RESPONSIVO */}
       <div className="relative h-[300px] sm:h-[400px] md:h-[520px]">
         <Image
           src="/images/fondoseller.webp"
@@ -26,12 +25,10 @@ export default async function ProfilesPage() {
         </div>
       </div>
 
-      {/* TITLO PRINCIPAL*/}
       <h2 className="text-center text-3xl sm:text-4xl font-semibold py-12 sm:py-16">
         Seller Profiles
       </h2>
 
-      {/* GRID RESPONSIVO  */}
       <div className="w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10 px-4 max-w-6xl mx-auto justify-items-center pb-10">
           {sellers.map((s) => (
@@ -44,7 +41,6 @@ export default async function ProfilesPage() {
                 p-4 flex flex-col transition-transform hover:-translate-y-0.5
               "
             >
-              {/* IMAGEN RESPONSIVA */}
               <div className="relative w-full h-48 sm:h-56 md:h-60 overflow-hidden rounded-2xl">
                 <Image
                   src={s.image_url}
@@ -60,17 +56,14 @@ export default async function ProfilesPage() {
                   {s.firstname} {s.lastname}
                 </h3>
 
-                {/* CATEGORIA ESTILO PILL */}
                 <div className="mt-2 inline-flex w-fit items-center rounded-full bg-[#f3f4f6] px-3 py-1 text-sm font-medium text-[#374151] mx-auto">
                   {s.category}
                 </div>
 
-                {/* BIO */}
                 <p className="mt-3 text-[15px] leading-6 text-[#4b5563] line-clamp-3 text-center">
                   {s.description}
                 </p>
 
-                {/* BOTON CENTRADO Y ANCLADO */}
                 <div className="mt-auto pt-6 flex justify-center">
                   <Link
                     href={`/profiles/${s.user_id}`}

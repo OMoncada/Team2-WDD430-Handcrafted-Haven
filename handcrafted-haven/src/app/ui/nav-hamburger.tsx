@@ -35,7 +35,6 @@ export default function NavHamburger({
             <NavLinks />
           </div>
 
-          {/* AUTH ACTIONS */}
           {!authenticated ? (
             <div className="flex gap-2">
               <Link
@@ -53,7 +52,9 @@ export default function NavHamburger({
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <div className="text-sm text-gray-700 px-1">Welcome, {firstName}!</div>
+              <div className="text-sm text-gray-700 px-1">
+                Welcome, {firstName}!
+              </div>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="rounded-lg bg-gray-50 px-4 py-2 text-sm border border-black hover:bg-red-100 hover:text-red-600 transition"

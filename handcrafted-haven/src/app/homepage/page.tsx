@@ -12,7 +12,6 @@ export default async function Page() {
 
   return (
     <main>
-
       <div className="relative">
         <Image
           alt="Hero Image"
@@ -41,7 +40,7 @@ export default async function Page() {
       </p>
 
       <div className="w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 px-4 max-w-7xl mx-auto justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-4 max-w-7xl mx-auto justify-items-center">
           {products.map((product) => (
             <ProductCard key={product.product_id} product={product} />
           ))}
@@ -50,7 +49,6 @@ export default async function Page() {
 
       <section className="mt-16 sm:mt-24 mx-auto max-w-6xl px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-
           <div className="relative h-[320px] sm:h-[380px] lg:h-[420px] rounded-2xl overflow-hidden shadow-lg">
             <Image
               src="/images/sellers/vendedormadera.png"
