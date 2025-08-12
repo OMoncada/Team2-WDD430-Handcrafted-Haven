@@ -2,6 +2,7 @@
 
 import postgres from "postgres";
 import { revalidatePath } from "next/cache";
+import { auth } from "../../../auth";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -86,9 +87,43 @@ export async function updateStoryContent(formData: FormData): Promise<void> {
 }
 
 export async function deleteProduct(formData: FormData) {
+  const session = await auth();
+  const user_id = session?.user?.id;
   const product_id = String(formData.get("product_id"));
+  if (!user_id) {
+    throw new Error("You must be signed in to delete a product.");
+  }
+  try {
+    await sql`
+      DELETE FROM product
+      WHERE product_id = ${product_id} AND user_id = ${user_id};
+    `;
+    revalidatePath(`/profiles/${user_id}`);
+    revalidatePath(`/profiles/${user_id}/edit`);
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete product.");
+  }
 }
 
 export async function deleteStory(formData: FormData) {
+  const session = await auth();
+  const user_id = session?.user?.id;
+
   const story_id = String(formData.get("story_id"));
+
+  if (!user_id) {
+    throw new Error("You must be signed in to delete a story.");
+  }
+  try {
+    await sql`
+      DELETE FROM stories
+      WHERE story_id = ${story_id} AND user_id = ${user_id};
+    `;
+    revalidatePath(`/profiles/${user_id}`);
+    revalidatePath(`/profiles/${user_id}/edit`);
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete story.");
+  }
 }

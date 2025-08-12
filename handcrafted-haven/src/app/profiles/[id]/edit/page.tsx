@@ -14,11 +14,13 @@ import {
   deleteProduct,
   deleteStory,
 } from "@/app/lib/sellerActions";
+import { Suspense } from "react";
+import { Notification } from "@/app/ui/Notification";
 
 const btnPrimary =
-  "inline-flex items-center justify-center rounded-md bg-[#0f172a] text-white px-4 py-2 text-sm font-medium hover:bg-[#0b1221] transition border border-black";
+  "inline-flex items-center justify-center rounded-md bg-[#0f172a] text-white px-4 py-2 text-sm font-medium hover:bg-[#0b1221] transition border border-black cursor-pointer";
 const btnDanger =
-  "inline-flex items-center justify-center rounded-md bg-red-600 text-white px-4 py-2 text-base font-bold uppercase hover:bg-red-700 transition border border-black";
+  "inline-flex items-center justify-center rounded-md bg-red-600 text-white px-4 py-2 text-base font-bold uppercase hover:bg-red-700 transition border border-black cursor-pointer";
 
 async function saveBasics(formData: FormData): Promise<void> {
   "use server";
@@ -45,7 +47,7 @@ async function removeProduct(formData: FormData): Promise<void> {
   "use server";
   const user_id = String(formData.get("user_id"));
   await deleteProduct(formData);
-  redirect(`/profiles/${user_id}/edit?saved=1`);
+  redirect(`/profiles/${user_id}/edit?deleted=1`);
 }
 
 async function saveStory(formData: FormData): Promise<void> {
@@ -66,12 +68,11 @@ async function removeStory(formData: FormData): Promise<void> {
   "use server";
   const user_id = String(formData.get("user_id"));
   await deleteStory(formData);
-  redirect(`/profiles/${user_id}/edit?saved=1`);
+  redirect(`/profiles/${user_id}/edit?deleted=1`);
 }
 
 export default async function EditSellerPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -79,7 +80,6 @@ export default async function EditSellerPage({
   const session = await auth();
 
   const { id: seller_id } = await params;
-  const sp = searchParams ? await searchParams : {}; // ✅ seguro
 
   if (!session?.user) redirect("/login");
   if (session.user.id !== seller_id) notFound();
@@ -89,17 +89,13 @@ export default async function EditSellerPage({
 
   const products = await fetchProductsBySellerId(seller_id);
   const stories = await fetchStoryBySellerId(seller_id);
-  const showSaved = sp["saved"] === "1";
-
   return (
     <main className="max-w-6xl mx-auto px-4 py-10">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
         <h1 className="text-3xl font-bold">Edit your profile</h1>
-        {showSaved && (
-          <span className="text-sm px-3 py-1 rounded-md bg-green-100 text-green-800 border border-green-300">
-            Changes saved
-          </span>
-        )}
+        <Suspense fallback={null}>
+          <Notification />
+        </Suspense>
       </div>
 
       <section className="mb-10 rounded-2xl border border-[#8B4513]/40 bg-[#FAF7F1] shadow-sm">
@@ -351,6 +347,7 @@ export default async function EditSellerPage({
                 placeholder="Share your story..."
                 className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#c49b63]"
                 rows={4}
+                minLength={10}
                 required
               />
               <div className="flex gap-3">
@@ -369,9 +366,6 @@ export default async function EditSellerPage({
                 <form action={removeStory}>
                   <input type="hidden" name="story_id" value={s.story_id} />
                   <input type="hidden" name="user_id" value={seller_id} />
-                  <button className={btnDanger} title="Delete story">
-                    Delete
-                  </button>
                 </form>
               </div>
 
